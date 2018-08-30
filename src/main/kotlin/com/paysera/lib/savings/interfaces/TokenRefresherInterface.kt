@@ -1,8 +1,8 @@
 package com.paysera.lib.savings.interfaces
 
-import io.reactivex.Observable
+import io.reactivex.Single
 
 interface TokenRefresherInterface {
-    fun refreshToken(): Observable<Any>
+    fun refreshToken(): Single<Any>
     fun isRefreshing(): Boolean
 }

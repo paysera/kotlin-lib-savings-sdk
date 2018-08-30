@@ -6,7 +6,8 @@ import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
 import com.paysera.lib.savings.entities.requests.SetSavingsAccountGoalRequest
 import com.paysera.lib.savings.interfaces.TokenRefresherInterface
 import com.paysera.lib.savings.retrofit.APIClient
-import io.reactivex.Observable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit.SECONDS
@@ -15,59 +16,59 @@ class SavingsApiClient(
     private val apiClient: APIClient,
     private val tokenRefresherInterface: TokenRefresherInterface
 ) {
-    private val retryCondition = { errors: Observable<Throwable> ->
+    private val retryCondition = { errors: Flowable<Throwable> ->
         errors.flatMap {
             val isUnauthorized = (it as HttpException).code() == 401
             if (isUnauthorized) {
                 synchronized(tokenRefresherInterface) {
                     if (tokenRefresherInterface.isRefreshing()) {
-                        Observable.timer(1, SECONDS).subscribeOn(Schedulers.io())
+                        Flowable.timer(1, SECONDS).subscribeOn(Schedulers.io())
                     } else {
-                        tokenRefresherInterface.refreshToken()
+                        tokenRefresherInterface.refreshToken().toFlowable()
                     }
                 }
             } else {
-                Observable.error(it)
+                Flowable.error(it)
             }
         }
     }
 
-    fun getSavingsAccount(filter: SavingsAccountFilter): Observable<List<SavingsAccount>> {
+    fun getSavingsAccount(filter: SavingsAccountFilter): Single<List<SavingsAccount>> {
         return apiClient.getSavingsAccounts(filter.accountNumbers).retryWhen(retryCondition)
     }
 
-    fun createSavingsAccount(userId: String, request: CreateSavingsAccountRequest): Observable<SavingsAccount> {
+    fun createSavingsAccount(userId: String, request: CreateSavingsAccountRequest): Single<SavingsAccount> {
         return apiClient.createSavingsAccount(userId, request).retryWhen(retryCondition)
     }
 
     fun setSavingsAccountGoal(
         accountNumber: String,
         request: SetSavingsAccountGoalRequest
-    ): Observable<SavingsAccountGoal> {
+    ): Single<SavingsAccountGoal> {
         return apiClient.setSavingsAccountGoal(accountNumber, request).retryWhen(retryCondition)
     }
 
     fun deleteSavingsAccountGoal(
         accountNumber: String
-    ): Observable<Unit> {
+    ): Single<Unit> {
         return apiClient.deleteSavingsAccountGoal(accountNumber).retryWhen(retryCondition)
     }
 
     fun createAutomatedFill(
         request: CreateAutomatedFillRequest
-    ): Observable<AutomatedFill> {
+    ): Single<AutomatedFill> {
         return apiClient.createAutomatedFill(request.toAccount!!, request).retryWhen(retryCondition)
     }
 
-    fun getAutomatedFills(filter: AutomatedFillsFilter): Observable<List<AutomatedFill>> {
+    fun getAutomatedFills(filter: AutomatedFillsFilter): Single<List<AutomatedFill>> {
         return apiClient.getAutomatedFills(filter.toAccountNumbers).retryWhen(retryCondition)
     }
 
-    fun getAutomatedFill(id: String): Observable<AutomatedFill> {
+    fun getAutomatedFill(id: String): Single<AutomatedFill> {
         return apiClient.getAutomatedFill(id).retryWhen(retryCondition)
     }
 
-    fun cancelAutomatedFill(id: String): Observable<Unit> {
+    fun cancelAutomatedFill(id: String): Single<Unit> {
         return apiClient.cancelAutomatedFill(id).retryWhen(retryCondition)
     }
 }
