@@ -18,7 +18,7 @@ class SavingsApiClient(
 ) {
     private val retryCondition = { errors: Flowable<Throwable> ->
         errors.flatMap {
-            val isUnauthorized = (it as HttpException).code() == 401
+            val isUnauthorized = (it as? HttpException)?.code() == 401
             if (isUnauthorized) {
                 synchronized(tokenRefresherInterface) {
                     if (tokenRefresherInterface.isRefreshing()) {
