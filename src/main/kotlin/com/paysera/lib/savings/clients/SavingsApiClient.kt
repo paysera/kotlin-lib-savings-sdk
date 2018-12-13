@@ -33,7 +33,7 @@ class SavingsApiClient(
         }
     }
 
-    fun getSavingsAccount(filter: SavingsAccountFilter): Single<List<SavingsAccount>> {
+    fun getSavingsAccount(filter: SavingsAccountFilter): Single<MetadataAwareResponse<SavingsAccount>> {
         return apiClient.getSavingsAccounts(filter.accountNumbers).retryWhen(retryCondition)
     }
 
@@ -48,10 +48,15 @@ class SavingsApiClient(
         return apiClient.setSavingsAccountGoal(accountNumber, request).retryWhen(retryCondition)
     }
 
-    fun deleteSavingsAccountGoal(
-        accountNumber: String
-    ): Single<Unit> {
+    fun deleteSavingsAccountGoal(accountNumber: String): Single<Unit> {
         return apiClient.deleteSavingsAccountGoal(accountNumber).retryWhen(retryCondition)
+            .flatMap {
+                if (it.code() == 204) {
+                    Single.just(Unit)
+                } else {
+                    Single.error(Exception("Http error code: ${it.code()}"))
+                }
+            }
     }
 
     fun createAutomatedFill(
@@ -60,7 +65,7 @@ class SavingsApiClient(
         return apiClient.createAutomatedFill(request.toAccount!!, request).retryWhen(retryCondition)
     }
 
-    fun getAutomatedFills(filter: AutomatedFillsFilter): Single<List<AutomatedFill>> {
+    fun getAutomatedFills(filter: AutomatedFillsFilter): Single<MetadataAwareResponse<AutomatedFill>> {
         return apiClient.getAutomatedFills(filter.toAccountNumbers).retryWhen(retryCondition)
     }
 
@@ -70,5 +75,12 @@ class SavingsApiClient(
 
     fun cancelAutomatedFill(id: String): Single<Unit> {
         return apiClient.cancelAutomatedFill(id).retryWhen(retryCondition)
+            .flatMap {
+                if (it.code() == 204) {
+                    Single.just(Unit)
+                } else {
+                    Single.error(Exception("Http error code: ${it.code()}"))
+                }
+            }
     }
 }

@@ -1,14 +1,13 @@
 package com.paysera.lib.savings.entities.requests
 
+import com.paysera.lib.savings.entities.Period
 import org.joda.money.Money
 
 class CreateAutomatedFillRequest(
     var amount: Money? = null,
     var fromAccount: String? = null,
     var toAccount: String? = null,
-    var periodType: String? = null,
-    var weekDay: Int? = null,
-    var monthDay: Int? = null
+    var period: Period
 ) {
     companion object {
         val PERIOD_TYPE_MONTHLY = "monthly"
