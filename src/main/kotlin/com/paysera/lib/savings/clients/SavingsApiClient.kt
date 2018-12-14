@@ -54,7 +54,7 @@ class SavingsApiClient(
                 if (it.code() == 204) {
                     Single.just(Unit)
                 } else {
-                    Single.error(Exception("Http error code: ${it.code()}"))
+                    Single.error(HttpException(it))
                 }
             }
     }
@@ -79,7 +79,7 @@ class SavingsApiClient(
                 if (it.code() == 204) {
                     Single.just(Unit)
                 } else {
-                    Single.error(Exception("Http error code: ${it.code()}"))
+                    Single.error(HttpException(it))
                 }
             }
     }
