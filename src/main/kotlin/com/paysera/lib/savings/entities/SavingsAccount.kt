@@ -4,10 +4,10 @@ import org.joda.money.Money
 import java.util.*
 
 class SavingsAccount(
-    val id: String,
     val type: String,
     val accountNumber: String,
     val goal: SavingsAccountGoal?,
+    val createdBy: String,
     val displayUrl: String?
 ) {
     companion object {
