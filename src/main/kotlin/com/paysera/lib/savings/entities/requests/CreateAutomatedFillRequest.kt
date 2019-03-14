@@ -7,7 +7,7 @@ class CreateAutomatedFillRequest(
     var amount: Money? = null,
     var fromAccount: String? = null,
     var toAccount: String? = null,
-    var period: Period
+    var period: Period? = null
 ) {
     companion object {
         val PERIOD_TYPE_MONTHLY = "monthly"
