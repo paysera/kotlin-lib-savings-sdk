@@ -3,7 +3,7 @@ package com.paysera.lib.savings.entities.requests
 import com.paysera.lib.savings.entities.Period
 import org.joda.money.Money
 
-class CreateAutomatedFillRequest(
+data class CreateAutomatedFillRequest(
     var amount: Money? = null,
     var fromAccount: String? = null,
     var toAccount: String? = null,

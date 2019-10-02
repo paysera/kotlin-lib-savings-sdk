@@ -1,5 +1,5 @@
 package com.paysera.lib.savings.entities.requests
 
-class CreateSavingsAccountRequest(
+data class CreateSavingsAccountRequest(
     var type: String? = null
 )

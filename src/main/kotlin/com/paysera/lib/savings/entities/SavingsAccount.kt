@@ -1,9 +1,6 @@
 package com.paysera.lib.savings.entities
 
-import org.joda.money.Money
-import java.util.*
-
-class SavingsAccount(
+data class SavingsAccount(
     val type: String,
     val accountNumber: String,
     val goal: SavingsAccountGoal?,
@@ -15,8 +12,3 @@ class SavingsAccount(
         val TYPE_PUBLIC = "public"
     }
 }
-
-class SavingsAccountGoal(
-    val amount: Money?,
-    val dateUntil: Date?
-)

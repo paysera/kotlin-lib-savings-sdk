@@ -1,86 +1,71 @@
 package com.paysera.lib.savings.clients
 
+import com.paysera.lib.common.entities.MetadataAwareResponse
+import com.paysera.lib.common.interfaces.BaseApiClient
+import com.paysera.lib.common.interfaces.TokenRefresher
+import com.paysera.lib.common.interfaces.retryWithTokenRefresher
 import com.paysera.lib.savings.entities.*
 import com.paysera.lib.savings.entities.requests.CreateAutomatedFillRequest
 import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
 import com.paysera.lib.savings.entities.requests.SetSavingsAccountGoalRequest
-import com.paysera.lib.savings.interfaces.TokenRefresherInterface
-import com.paysera.lib.savings.retrofit.APIClient
-import io.reactivex.Flowable
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
-import java.util.concurrent.TimeUnit.SECONDS
+import com.paysera.lib.savings.retrofit.NetworkApiClient
+import kotlinx.coroutines.Deferred
 
 class SavingsApiClient(
-    private val apiClient: APIClient,
-    private val tokenRefresherInterface: TokenRefresherInterface
-) {
-    private val retryCondition = { errors: Flowable<Throwable> ->
-        errors.flatMap {
-            val isUnauthorized = (it as? HttpException)?.code() == 401
-            if (isUnauthorized) {
-                synchronized(tokenRefresherInterface) {
-                    if (tokenRefresherInterface.isRefreshing()) {
-                        Flowable.timer(1, SECONDS).subscribeOn(Schedulers.io())
-                    } else {
-                        tokenRefresherInterface.refreshToken().toFlowable()
-                    }
-                }
-            } else {
-                Flowable.error(it)
-            }
-        }
+    private val networkApiClient: NetworkApiClient,
+    private val tokenRefresherInterface: TokenRefresher
+) : BaseApiClient {
+
+    suspend fun getSavingsAccount(filter: SavingsAccountFilter): Deferred<MetadataAwareResponse<SavingsAccount>>{
+        return networkApiClient.getSavingsAccounts(
+            accountNumbers = filter.accountNumbers
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun getSavingsAccount(filter: SavingsAccountFilter): Single<MetadataAwareResponse<SavingsAccount>> {
-        return apiClient.getSavingsAccounts(filter.accountNumbers).retryWhen(retryCondition)
+    suspend fun createSavingsAccount(userId: String, request: CreateSavingsAccountRequest): Deferred<SavingsAccount> {
+        return networkApiClient.createSavingsAccount(
+            userId = userId,
+            request = request
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun createSavingsAccount(userId: String, request: CreateSavingsAccountRequest): Single<SavingsAccount> {
-        return apiClient.createSavingsAccount(userId, request).retryWhen(retryCondition)
+    suspend fun setSavingsAccountGoal(accountNumber: String, request: SetSavingsAccountGoalRequest): Deferred<SavingsAccountGoal> {
+        return networkApiClient.setSavingsAccountGoal(
+            accountNumber = accountNumber,
+            request = request
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun setSavingsAccountGoal(
-        accountNumber: String,
-        request: SetSavingsAccountGoalRequest
-    ): Single<SavingsAccountGoal> {
-        return apiClient.setSavingsAccountGoal(accountNumber, request).retryWhen(retryCondition)
+    suspend fun deleteSavingsAccountGoal(accountNumber: String): Deferred<Void> {
+        return networkApiClient.deleteSavingsAccountGoal(
+            accountNumber = accountNumber
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun deleteSavingsAccountGoal(accountNumber: String): Single<Unit> {
-        return apiClient.deleteSavingsAccountGoal(accountNumber).retryWhen(retryCondition)
-            .flatMap {
-                if (it.code() == 204) {
-                    Single.just(Unit)
-                } else {
-                    Single.error(HttpException(it))
-                }
-            }
+    suspend fun createAutomatedFill(
+        createAutomatedFill: CreateAutomatedFillRequest
+    ): Deferred<AutomatedFill> {
+        return networkApiClient.createAutomatedFill(
+            accountNumber = createAutomatedFill.toAccount!!,
+            createAutomatedFill = createAutomatedFill
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun createAutomatedFill(
-        request: CreateAutomatedFillRequest
-    ): Single<AutomatedFill> {
-        return apiClient.createAutomatedFill(request.toAccount!!, request).retryWhen(retryCondition)
+    suspend fun getAutomatedFills(filter: AutomatedFillsFilter): Deferred<MetadataAwareResponse<AutomatedFill>> {
+        return networkApiClient.getAutomatedFills(
+            toAccountNumbers = filter.toAccountNumbers
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun getAutomatedFills(filter: AutomatedFillsFilter): Single<MetadataAwareResponse<AutomatedFill>> {
-        return apiClient.getAutomatedFills(filter.toAccountNumbers).retryWhen(retryCondition)
+    suspend fun getAutomatedFill(id: String): Deferred<AutomatedFill> {
+        return networkApiClient.getAutomatedFill(
+            id = id
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    fun getAutomatedFill(id: String): Single<AutomatedFill> {
-        return apiClient.getAutomatedFill(id).retryWhen(retryCondition)
-    }
-
-    fun cancelAutomatedFill(id: String): Single<Unit> {
-        return apiClient.cancelAutomatedFill(id).retryWhen(retryCondition)
-            .flatMap {
-                if (it.code() == 204) {
-                    Single.just(Unit)
-                } else {
-                    Single.error(HttpException(it))
-                }
-            }
+    suspend fun cancelAutomatedFill(id: String): Deferred<Void> {
+        return networkApiClient.cancelAutomatedFill(
+            id  = id
+        ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 }

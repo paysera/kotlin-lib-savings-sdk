@@ -1,54 +1,57 @@
 package com.paysera.lib.savings.retrofit
 
-import com.paysera.lib.savings.entities.*
+import com.paysera.lib.common.entities.MetadataAwareResponse
+import com.paysera.lib.savings.entities.AutomatedFill
+import com.paysera.lib.savings.entities.SavingsAccount
+import com.paysera.lib.savings.entities.SavingsAccountGoal
 import com.paysera.lib.savings.entities.requests.CreateAutomatedFillRequest
 import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
 import com.paysera.lib.savings.entities.requests.SetSavingsAccountGoalRequest
-import io.reactivex.Single
-import retrofit2.Response
+import kotlinx.coroutines.Deferred
 import retrofit2.http.*
 
-interface APIClient {
+interface NetworkApiClient {
+
     @GET("savings-accounts")
-    fun getSavingsAccounts(
+    suspend fun getSavingsAccounts(
         @Query("account_numbers[]") accountNumbers: List<String>
-    ): Single<MetadataAwareResponse<SavingsAccount>>
+    ): Deferred<MetadataAwareResponse<SavingsAccount>>
 
     @POST("users/{userId}/savings-accounts")
-    fun createSavingsAccount(
+    suspend fun createSavingsAccount(
         @Path("userId") userId: String,
-        @Body createSavingsAccountRequest: CreateSavingsAccountRequest
-    ): Single<SavingsAccount>
+        @Body request: CreateSavingsAccountRequest
+    ): Deferred<SavingsAccount>
 
     @PUT("savings-accounts/{accountNumber}/goal")
-    fun setSavingsAccountGoal(
+    suspend fun setSavingsAccountGoal(
         @Path("accountNumber") accountNumber: String,
         @Body request: SetSavingsAccountGoalRequest
-    ): Single<SavingsAccountGoal>
+    ): Deferred<SavingsAccountGoal>
 
     @DELETE("savings-accounts/{accountNumber}/goal")
-    fun deleteSavingsAccountGoal(
+    suspend fun deleteSavingsAccountGoal(
         @Path("accountNumber") accountNumber: String
-    ): Single<Response<Unit>>
+    ): Deferred<Void>
 
     @POST("savings-accounts/{accountNumber}/automated-fills")
-    fun createAutomatedFill(
+    suspend fun createAutomatedFill(
         @Path("accountNumber") accountNumber: String,
         @Body createAutomatedFill: CreateAutomatedFillRequest
-    ): Single<AutomatedFill>
+    ): Deferred<AutomatedFill>
 
     @GET("automated-fills")
-    fun getAutomatedFills(
+    suspend fun getAutomatedFills(
         @Query("to_account_numbers[]") toAccountNumbers: List<String>
-    ): Single<MetadataAwareResponse<AutomatedFill>>
+    ): Deferred<MetadataAwareResponse<AutomatedFill>>
 
     @GET("automated-fills/{id}")
-    fun getAutomatedFill(
+    suspend fun getAutomatedFill(
         @Path("id") id: String
-    ): Single<AutomatedFill>
+    ): Deferred<AutomatedFill>
 
     @DELETE("automated-fills/{id}")
-    fun cancelAutomatedFill(
+    suspend fun cancelAutomatedFill(
         @Path("id") id: String
-    ): Single<Response<Unit>>
+    ): Deferred<Void>
 }

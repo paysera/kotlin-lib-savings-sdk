@@ -1,5 +1,5 @@
 package com.paysera.lib.savings.entities
 
-class SavingsAccountFilter(
+data class SavingsAccountFilter(
     val accountNumbers: List<String>
 )
