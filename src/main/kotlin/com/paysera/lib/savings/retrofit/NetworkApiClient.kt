@@ -8,6 +8,7 @@ import com.paysera.lib.savings.entities.requests.CreateAutomatedFillRequest
 import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
 import com.paysera.lib.savings.entities.requests.SetSavingsAccountGoalRequest
 import kotlinx.coroutines.Deferred
+import retrofit2.Response
 import retrofit2.http.*
 
 interface NetworkApiClient {
@@ -32,7 +33,7 @@ interface NetworkApiClient {
     @DELETE("savings-accounts/{accountNumber}/goal")
     fun deleteSavingsAccountGoal(
         @Path("accountNumber") accountNumber: String
-    ): Deferred<Void>
+    ): Deferred<Response<Void>>
 
     @POST("savings-accounts/{accountNumber}/automated-fills")
     fun createAutomatedFill(
@@ -53,5 +54,5 @@ interface NetworkApiClient {
     @DELETE("automated-fills/{id}")
     fun cancelAutomatedFill(
         @Path("id") id: String
-    ): Deferred<Void>
+    ): Deferred<Response<Void>>
 }

@@ -10,6 +10,7 @@ import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
 import com.paysera.lib.savings.entities.requests.SetSavingsAccountGoalRequest
 import com.paysera.lib.savings.retrofit.NetworkApiClient
 import kotlinx.coroutines.Deferred
+import retrofit2.Response
 
 class SavingsApiClient(
     private val networkApiClient: NetworkApiClient,
@@ -36,7 +37,7 @@ class SavingsApiClient(
         ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    suspend fun deleteSavingsAccountGoal(accountNumber: String): Deferred<Void> {
+    suspend fun deleteSavingsAccountGoal(accountNumber: String): Deferred<Response<Void>> {
         return networkApiClient.deleteSavingsAccountGoal(
             accountNumber = accountNumber
         ).retryWithTokenRefresher(tokenRefresherInterface)
@@ -63,7 +64,7 @@ class SavingsApiClient(
         ).retryWithTokenRefresher(tokenRefresherInterface)
     }
 
-    suspend fun cancelAutomatedFill(id: String): Deferred<Void> {
+    suspend fun cancelAutomatedFill(id: String): Deferred<Response<Void>> {
         return networkApiClient.cancelAutomatedFill(
             id  = id
         ).retryWithTokenRefresher(tokenRefresherInterface)
