@@ -16,7 +16,7 @@ class SavingsApiClient(
     private val tokenRefresherInterface: TokenRefresher
 ) : BaseApiClient {
 
-    suspend fun getSavingsAccount(filter: SavingsAccountFilter): Deferred<MetadataAwareResponse<SavingsAccount>>{
+    suspend fun getSavingsAccounts(filter: SavingsAccountFilter): Deferred<MetadataAwareResponse<SavingsAccount>>{
         return networkApiClient.getSavingsAccounts(
             accountNumbers = filter.accountNumbers
         ).retryWithTokenRefresher(tokenRefresherInterface)
