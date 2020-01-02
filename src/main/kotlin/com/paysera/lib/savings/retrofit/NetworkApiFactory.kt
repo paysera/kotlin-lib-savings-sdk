@@ -8,8 +8,11 @@ import com.paysera.lib.savings.clients.SavingsApiClient
 class NetworkApiFactory(credentials: ApiCredentials, timeout: Long? = null) : BaseApiFactory<SavingsApiClient>(credentials, timeout) {
 
     override fun createClient(baseUrl: String, tokenRefresher: TokenRefresherInterface?): SavingsApiClient {
-        return SavingsApiClient(
-            createRetrofit(baseUrl, tokenRefresher).create(NetworkApiClient::class.java)
-        )
+        createRetrofit(baseUrl, tokenRefresher).apply {
+            return SavingsApiClient(
+                retrofit.create(NetworkApiClient::class.java),
+                apiRequestManager
+            )
+        }
     }
 }
