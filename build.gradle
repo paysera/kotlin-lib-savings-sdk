@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'org.joda:joda-money:0.12'
 
-    implementation ('com.github.paysera:kotlin-lib-common-sdk:1.4.0') {
+    implementation ('com.github.paysera:kotlin-lib-common-sdk:1.5.0') {
         exclude group: 'org.json', module: 'json'
     }
 
