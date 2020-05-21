@@ -17,9 +17,11 @@ class NetworkApiFactory(
     timeout,
     httpLoggingInterceptorLevel
 ) {
+    override val baseUrl = "https://savings.paysera.com/savings/rest/v1/"
+    override val certifiedHosts = listOf("savings.paysera.com")
 
-    override fun createClient(baseUrl: String, tokenRefresher: TokenRefresherInterface?): SavingsApiClient {
-        createRetrofit(baseUrl, tokenRefresher).apply {
+    override fun createClient(tokenRefresher: TokenRefresherInterface?): SavingsApiClient {
+        createRetrofit(tokenRefresher).apply {
             return SavingsApiClient(
                 retrofit.create(NetworkApiClient::class.java),
                 apiRequestManager
