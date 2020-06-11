@@ -4,12 +4,28 @@ import com.paysera.lib.common.entities.ApiCredentials
 import com.paysera.lib.common.interfaces.TokenRefresherInterface
 import com.paysera.lib.common.retrofit.BaseApiFactory
 import com.paysera.lib.savings.clients.SavingsApiClient
+import okhttp3.logging.HttpLoggingInterceptor
 
-class NetworkApiFactory(credentials: ApiCredentials, timeout: Long? = null) : BaseApiFactory<SavingsApiClient>(credentials, timeout) {
+class NetworkApiFactory(
+    userAgent: String?,
+    credentials: ApiCredentials,
+    timeout: Long? = null,
+    httpLoggingInterceptorLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BASIC
+) : BaseApiFactory<SavingsApiClient>(
+    userAgent,
+    credentials,
+    timeout,
+    httpLoggingInterceptorLevel
+) {
+    override val baseUrl = "https://savings.paysera.com/savings/rest/v1/"
+    override val certifiedHosts = listOf("savings.paysera.com")
 
-    override fun createClient(baseUrl: String, tokenRefresher: TokenRefresherInterface?): SavingsApiClient {
-        return SavingsApiClient(
-            createRetrofit(baseUrl, tokenRefresher).create(NetworkApiClient::class.java)
-        )
+    override fun createClient(tokenRefresher: TokenRefresherInterface?): SavingsApiClient {
+        createRetrofit(tokenRefresher).apply {
+            return SavingsApiClient(
+                retrofit.create(NetworkApiClient::class.java),
+                apiRequestManager
+            )
+        }
     }
 }

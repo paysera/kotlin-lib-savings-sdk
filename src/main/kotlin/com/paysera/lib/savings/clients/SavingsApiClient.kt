@@ -1,7 +1,8 @@
 package com.paysera.lib.savings.clients
 
 import com.paysera.lib.common.entities.MetadataAwareResponse
-import com.paysera.lib.common.interfaces.BaseApiClient
+import com.paysera.lib.common.retrofit.ApiRequestManager
+import com.paysera.lib.common.retrofit.BaseApiClient
 import com.paysera.lib.savings.entities.*
 import com.paysera.lib.savings.entities.requests.CreateAutomatedFillRequest
 import com.paysera.lib.savings.entities.requests.CreateSavingsAccountRequest
@@ -11,8 +12,9 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
 class SavingsApiClient(
-    private val networkApiClient: NetworkApiClient
-) : BaseApiClient {
+    private val networkApiClient: NetworkApiClient,
+    apiRequestManager: ApiRequestManager
+) : BaseApiClient(apiRequestManager) {
 
     fun getSavingsAccounts(filter: SavingsAccountFilter): Deferred<MetadataAwareResponse<SavingsAccount>>{
         return networkApiClient.getSavingsAccounts(
