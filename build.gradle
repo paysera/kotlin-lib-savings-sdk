@@ -31,7 +31,7 @@ dependencies {
     implementation 'org.joda:joda-money:0.12'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
 
-    implementation('com.github.paysera:kotlin-lib-common-sdk:2.0.0') {
+    implementation('com.github.paysera:kotlin-lib-common-sdk:2.1.0') {
         exclude group: 'org.json', module: 'json'
     }
 
