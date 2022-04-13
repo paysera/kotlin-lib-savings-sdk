@@ -7,5 +7,5 @@ object ApplicationDependencyVersions {
     const val jodaMoney = "0.12"
     const val certificateTransparency ="0.3.0"
     const val junit = "4.12"
-    const val payseraCommonSdk = "2.6.3"
+    const val payseraCommonSdk = "2.6.4"
 }
