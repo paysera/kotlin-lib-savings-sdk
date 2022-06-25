@@ -12,7 +12,6 @@ class NetworkApiFactory(
     locale: String?,
     userAgent: String?,
     credentials: AuthorizationApiCredentials,
-    certifiedHosts: List<String> = emptyList(),
     timeout: Long? = null,
     httpLoggingInterceptorLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BASIC,
     errorLogger: ErrorLoggerInterface
@@ -21,7 +20,6 @@ class NetworkApiFactory(
     locale,
     userAgent,
     credentials,
-    certifiedHosts,
     timeout,
     httpLoggingInterceptorLevel,
     errorLogger
