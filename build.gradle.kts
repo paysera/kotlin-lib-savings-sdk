@@ -7,6 +7,7 @@ version = ApplicationConfiguration.version
 buildscript {
     repositories {
         mavenCentral()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
     dependencies {
         classpath(ApplicationDependencies.GradlePlugins.kotlinGradlePlugin)
@@ -27,6 +28,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
