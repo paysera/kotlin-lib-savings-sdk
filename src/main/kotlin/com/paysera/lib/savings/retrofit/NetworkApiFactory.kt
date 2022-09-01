@@ -1,6 +1,6 @@
 package com.paysera.lib.savings.retrofit
 
-import com.paysera.lib.common.entities.AuthorizationApiCredentials
+import com.paysera.lib.common.entities.PayseraApiCredentials
 import com.paysera.lib.common.interfaces.ErrorLoggerInterface
 import com.paysera.lib.common.interfaces.TokenRefresherInterface
 import com.paysera.lib.common.retrofit.BaseApiFactory
@@ -12,7 +12,7 @@ class NetworkApiFactory(
     baseUrl: String,
     locale: String?,
     userAgent: String?,
-    credentials: AuthorizationApiCredentials,
+    credentials: PayseraApiCredentials,
     timeout: Long? = null,
     httpLoggingInterceptorLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BASIC,
     errorLogger: ErrorLoggerInterface,
