@@ -6,5 +6,5 @@ object ApplicationDependencyVersions {
     const val gson = "2.8.6"
     const val jodaMoney = "0.12"
     const val junit = "4.12"
-    const val payseraCommonSdk = "2.6.7-SNAPSHOT"
+    const val payseraCommonSdk = "2.6.7"
 }
