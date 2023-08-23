@@ -6,6 +6,7 @@ version = ApplicationConfiguration.version
 
 buildscript {
     repositories {
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
         mavenCentral()
     }
     dependencies {
@@ -26,6 +27,7 @@ java {
 }
 
 repositories {
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
     mavenCentral()
 }
 
